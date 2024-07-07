@@ -79,7 +79,7 @@ def convert_to_dict_and_categories(df, group_col):
 # Streamlit app
 st.title("脂肪酸含量分析")
 
-uploaded_file = st.file_uploader("上传你的CSV文件", type=["xlsx"])
+uploaded_file = st.file_uploader("上传你的xlsx文件", type=["xlsx"])
 
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file, sheet_name='Sheet1')
@@ -90,15 +90,15 @@ if uploaded_file is not None:
     st.write("数据预览：")
     st.dataframe(df)
 
-    #df = df[df['TYPE']=='NPCPLD']
-    #注意现在这个要求唯一TYPE
-    assert len(list(set(df['TYPE']))) == 1
-    df = df.loc[:, ~df.columns.isin(['TYPE'])]
-    
-    group_col = st.selectbox("选择分组列", df.columns)
-    
-    if st.button("生成图表"):
-        data_dict = convert_to_dict_and_categories(df, group_col)
-        fatty_acid_types = [col for col in df.columns if col != group_col]
-        use_name = st.text_input("请输入图表标题", "脂肪酸含量")
-        plot_fatty_acid_content(fatty_acid_types, data_dict, use_name)
+    # Ensure only one TYPE is present
+    if len(list(set(df['TYPE']))) != 1:
+        st.error("一次只能分析一组数据，请确保输入数据仅包含一个 TYPE。")
+    else:
+        df = df.loc[:, ~df.columns.isin(['TYPE'])]
+        group_col = st.selectbox("选择分组列", df.columns)
+        
+        if st.button("生成图表"):
+            data_dict = convert_to_dict_and_categories(df, group_col)
+            fatty_acid_types = [col for col in df.columns if col != group_col]
+            use_name = st.text_input("请输入图表标题", "脂肪酸含量")
+            plot_fatty_acid_content(fatty_acid_types, data_dict, use_name)
