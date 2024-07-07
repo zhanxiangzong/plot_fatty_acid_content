@@ -29,7 +29,10 @@ def plot_fatty_acid_content(fatty_acid_types, data_dict, use_name):
         # Perform t-tests and annotate significance for each fatty acid type
         if group != 'WT':
             ## ttest_ind是假设等方差的。和我们的需求完全匹配吗？三个WT之间的方差、3个MUT之间的方差应该假设一致吗？
-            p_values = [ttest_ind(data_dict['WT'][j], data_dict[group][j]).pvalue for j in range(num_fatty_acids)]
+            #p_values = [ttest_ind(data_dict['WT'][j], data_dict[group][j]).pvalue for j in range(num_fatty_acids)]
+            # 先改用不等方差的
+            p_values = [ttest_ind(data_dict['WT'][j], data_dict[group][j],equal_var=False).pvalue for j in range(num_fatty_acids)]
+            # equal_var=False
             for rect, p, std in zip(rects, p_values, stds[group]):
                 height = rect.get_height()
                 offset = std * 1.5  # Dynamic offset based on the error bar height
