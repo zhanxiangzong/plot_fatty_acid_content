@@ -83,10 +83,12 @@ uploaded_file = st.file_uploader("上传你的xlsx文件", type=["xlsx"])
 
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file, sheet_name='Sheet1')
-    df['TYPE'] = [ ''.join(i.split(' ')[1:-1]) for i in df['Samples']]
-    df['Group'] = [ ''.join(i.split(' ')[-1]) for i in df['Samples']]
-    df['sub_group']=['_'.join(i.split('-')[:-1]) for i in df['Group']]
-    df = df.loc[:, ~df.columns.isin(['Samples','Group',''])]
+    # 数据要带一列TYPE、一列sub_group；不带samples了
+    #df['TYPE'] = [ ''.join(i.split(' ')[1:-1]) for i in df['Samples']]
+    #df['Group'] = [ ''.join(i.split(' ')[-1]) for i in df['Samples']]
+    #df['sub_group']=['_'.join(i.split('-')[:-1]) for i in df['Group']]
+    
+    #df = df.loc[:, ~df.columns.isin(['Samples'])]
     st.write("数据预览：")
     st.dataframe(df)
 
